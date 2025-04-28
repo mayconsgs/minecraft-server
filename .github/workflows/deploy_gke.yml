@@ -28,7 +28,7 @@ jobs:
         run: gcloud auth configure-docker ${{vars.GCP_REGION}}-docker.pkg.dev
 
       - name: Build Container
-        run: docker build -t ${{ env.DOCKER_IMAGE_NAME }} . --target app
+        run: docker build -t ${{ env.DOCKER_IMAGE_NAME }} .
 
       - name: Push Container
         run: docker push ${{ env.DOCKER_IMAGE_NAME }}
