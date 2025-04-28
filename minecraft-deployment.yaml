@@ -22,11 +22,11 @@ spec:
               name: world-storage
           resources:
             requests:
-              memory: "2Gi"
               cpu: "1000m"
+              memory: "6Gi"
             limits:
-              memory: "8Gi"
-              cpu: "4000m"
+              cpu: "6000m"
+              memory: "16Gi"
       volumes:
         - name: world-storage
           persistentVolumeClaim:
