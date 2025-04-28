@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minecraft-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: minecraft
+  template:
+    metadata:
+      labels:
+        app: minecraft
+    spec:
+      containers:
+        - name: minecraft
+          image: us-central1-docker.pkg.dev/SEU-PROJETO-ID/minecraft/minecraft-server:modded
+          ports:
+            - containerPort: 25565
+          volumeMounts:
+            - mountPath: /server/world
+              name: world-storage
+          resources:
+            requests:
+              memory: "2Gi"
+              cpu: "1000m"
+            limits:
+              memory: "6Gi"
+              cpu: "4000m"
+      volumes:
+        - name: world-storage
+          persistentVolumeClaim:
+            claimName: minecraft-world-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: minecraft-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: minecraft
+  ports:
+    - port: 25565
+      targetPort: 25565

@@ -1,0 +1,34 @@
+name: Create Release
+env:
+  DOCKER_IMAGE_NAME: "${{vars.GCP_REGION}}-docker.pkg.dev/${{vars.GCP_PROJECT}}/${{vars.GCP_AR_NAME}}/${{vars.GCP_GKE_SERVICE}}:latest"
+  STORE_PATH: ""
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Build Container
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Auth With Google CLI
+        uses: "google-github-actions/auth@v2"
+        with:
+          credentials_json: "${{secrets.GCP_SERVICE_ACCOUNT_DEPLOY}}"
+
+      - name: Authorize Docker push
+        run: gcloud auth configure-docker ${{vars.GCP_REGION}}-docker.pkg.dev
+
+      - name: Build Container
+        run: docker build -t ${{ env.DOCKER_IMAGE_NAME }} . --target app
+
+      - name: Push Container
+        run: docker push ${{ env.DOCKER_IMAGE_NAME }}
