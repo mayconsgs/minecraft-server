@@ -4,9 +4,8 @@ env:
   STORE_PATH: ""
 
 on:
-  push:
-    branches:
-      - main
+  release:
+    types: [published]
 
 permissions:
   contents: read
